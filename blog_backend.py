@@ -13,10 +13,6 @@ from sqlalchemy import Table, Column
 class Base(DeclarativeBase):
     pass
 
-engine = create_engine('sqlite:///blog.db', echo=True)
-
-session = sessionmaker(bind=engine)()
-
 
 class Users(Base):
     __tablename__ = "users"
@@ -54,8 +50,35 @@ class Topics(Base):
         return f"({self.id}, {self.topic_name})"
 
 
+engine = create_engine('sqlite:///blog.db', echo=True)
 Base.metadata.create_all(engine)
 
+Session = sessionmaker(bind=engine)
+session = Session()
+
+while True:
+    choice = input('''[===Choose===]: 
+1 - View posts
+2 - Add posts
+''').strip()
+
+    try:
+        choice = int(choice)
+    except ValueError:
+        pass
+
+    if choice == 1:
+        posts = session.query(Posts).all()
+        for post in posts:
+            print(post)
+
+    if choice == 2:
+        user_id = input('Enter user ID: ')
+        topic_id = input('Enter topic ID: ')
+
+        posts = Posts(user_id=user_id, topic_id=topic_id)
+        session.add(posts)
+        session.commit()
 
 # add topic main layout
 # view users, add users, second layout - K
