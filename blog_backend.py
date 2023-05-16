@@ -32,6 +32,8 @@ class Posts(Base):
     __tablename__ = "posts"
     id = mapped_column(Integer, primary_key=True)
     user_id = mapped_column("user_id", Integer, ForeignKey("users.id"))
+    post_name = mapped_column("post_name", String(50))
+    content = mapped_column("content", String(300))
     topic_id = mapped_column("topic_id", Integer, ForeignKey("topics.id"))
     # Relationships:
     user_post = relationship("Users", back_populates="posts_by_user")
@@ -65,41 +67,20 @@ def add_user(username, f_name, l_name, email):
 
 def get_users():
     users = session.query(Users).all()
-    for user in users:
-        print("----------------------------")
-        print("---Information about user---")
-        print(f"Username: {user.user_name}")
-        print(f"First name: {user.f_name}")
-        print(f"Last name: {user.l_name}")
-        print(f"Email: {user.email}")
-        print("----------------------------")
-    if not users:
-        print("No users found.")
+    return users
 
 def get_user_by_id(user_id):
     user = session.get(Users, user_id)
-    if user:
-        print(f"Information about user")
-        print(f"Username: {user.user_name}")
-        print(f"First name: {user.f_name}")
-        print(f"Last name: {user.l_name}")
-        print(f"Email: {user.email}")
-    else:
-        print("User not found")
-
-# add_user("Rokenzo", "Rokas", "Jokubaitis", "Rokas123@gmail.com")
-# add_user("Edga", "Edgaras", "Ulanovas", "Edga123@gmail.com")
-# get_users()
-# get_user_by_id(1)
-
+    return user
 
 def view_posts():
     posts = session.query(Posts).all()
     for post in posts:
         print(post)
+    return posts
 
-def add_posts(user_id, topic_id):
-    posts = Posts(user_id=user_id, topic_id=topic_id)
+def add_posts(user_id, post_name, content, topic_id):
+    posts = Posts(user_id=user_id, post_name=post_name, content=content, topic_id=topic_id)
     session.add(posts)
     session.commit()
 
@@ -112,6 +93,7 @@ def view_topic():
     all_topics = session.query(Topics).all()
     for topic in all_topics:
         print(topic)
+    return all_topics
 
 # view comments, add comments, second layout
 # view likes, add like, second layout
