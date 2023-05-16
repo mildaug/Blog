@@ -21,7 +21,6 @@ class Users(Base):
     email = mapped_column("email", String(50))
     f_name = mapped_column("first_name", String(50))
     l_name = mapped_column("last_name", String(50))
-    email = mapped_column("email", String(50))
     # Relationships:
     posts_by_user = relationship("Posts", back_populates="user_post")
 
@@ -94,31 +93,22 @@ def get_user_by_id(user_id):
 # get_user_by_id(1)
 
 
-while True:
-    choice = input('''[===Choose===]: 
-1 - View posts
-2 - Add posts
-''').strip()
+def view_posts():
+    posts = session.query(Posts).all()
+    for post in posts:
+        print(post)
 
-    try:
-        choice = int(choice)
-    except ValueError:
-        pass
+def add_posts():
+    user_id = input('Enter user ID: ')
+    topic_id = input('Enter topic ID: ')
 
-    if choice == 1:
-        posts = session.query(Posts).all()
-        for post in posts:
-            print(post)
+    posts = Posts(user_id=user_id, topic_id=topic_id)
+    session.add(posts)
+    session.commit()
 
-    if choice == 2:
-        user_id = input('Enter user ID: ')
-        topic_id = input('Enter topic ID: ')
+def view_comments():
+    pass
 
-        posts = Posts(user_id=user_id, topic_id=topic_id)
-        session.add(posts)
-        session.commit()
-    else:
-        break
 
 
 
