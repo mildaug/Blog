@@ -9,8 +9,6 @@ engine = create_engine('sqlite:///blog.db', echo=True)
 
 session = sessionmaker(bind=engine)()
 
-Base.metadata.create_all(engine)
-
 
 class Users(Base):
     __tablename__ = "users"
@@ -46,3 +44,5 @@ class Topics(Base):
     def __repr__(self):
         return f"({self.id}, {self.topic_name})"
 
+
+Base.metadata.create_all(engine)
