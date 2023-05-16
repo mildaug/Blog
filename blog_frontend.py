@@ -108,7 +108,7 @@ while True:
             if event_hard_drugs == sg.WINDOW_CLOSED:
                 break
             # Handle button clicks within the hard drugs window
-            sg.popup(f'{event_hard_drugs} Clicked!')
+            sg.popup(f'{event_hard_drugs} Clickedd!')
         hard_drugs_window.close()
            
 
