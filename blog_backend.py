@@ -22,6 +22,7 @@ class Users(Base):
     __tablename__ = "users"
     id = mapped_column(Integer, primary_key=True)
     user_name = mapped_column("user_name", String(50))
+    email = mapped_column("email", String(50))
     # Relationships:
     posts_by_user = relationship("Posts", back_populates="user_post")
 
@@ -54,3 +55,10 @@ class Topics(Base):
 
 
 Base.metadata.create_all(engine)
+
+
+# add topic main layout
+# view users, add users, second layout - K
+# view posts, add posts, second layout - M
+# view comments, add comments, second layout
+# view likes, add like, second layout
