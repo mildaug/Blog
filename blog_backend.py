@@ -13,15 +13,14 @@ from sqlalchemy import Table, Column
 class Base(DeclarativeBase):
     pass
 
-engine = create_engine('sqlite:///blog.db', echo=True)
-
-session = sessionmaker(bind=engine)()
-
 
 class Users(Base):
     __tablename__ = "users"
     id = mapped_column(Integer, primary_key=True)
     user_name = mapped_column("user_name", String(50))
+    email = mapped_column("email", String(50))
+    f_name = mapped_column("first_name", String(50))
+    l_name = mapped_column("last_name", String(50))
     # Relationships:
     posts_by_user = relationship("Posts", back_populates="user_post")
 
@@ -53,4 +52,70 @@ class Topics(Base):
         return f"({self.id}, {self.topic_name})"
 
 
+engine = create_engine('sqlite:///blog.db', echo=True)
 Base.metadata.create_all(engine)
+
+Session = sessionmaker(bind=engine)
+session = Session()
+
+def add_user(username, f_name, l_name, email):
+    user = Users(user_name=username, f_name=f_name, l_name=l_name, email=email)
+    session.add(user)
+    session.commit()
+
+def get_users():
+    users = session.query(Users).all()
+    for user in users:
+        print("----------------------------")
+        print("---Information about user---")
+        print(f"Username: {user.user_name}")
+        print(f"First name: {user.f_name}")
+        print(f"Last name: {user.l_name}")
+        print(f"Email: {user.email}")
+        print("----------------------------")
+    if not users:
+        print("No users found.")
+
+def get_user_by_id(user_id):
+    user = session.get(Users, user_id)
+    if user:
+        print(f"Information about user")
+        print(f"Username: {user.user_name}")
+        print(f"First name: {user.f_name}")
+        print(f"Last name: {user.l_name}")
+        print(f"Email: {user.email}")
+    else:
+        print("User not found")
+
+# add_user("Rokenzo", "Rokas", "Jokubaitis", "Rokas123@gmail.com")
+# add_user("Edga", "Edgaras", "Ulanovas", "Edga123@gmail.com")
+# get_users()
+# get_user_by_id(1)
+
+
+def view_posts():
+    posts = session.query(Posts).all()
+    for post in posts:
+        print(post)
+
+def add_posts():
+    user_id = input('Enter user ID: ')
+    topic_id = input('Enter topic ID: ')
+
+    posts = Posts(user_id=user_id, topic_id=topic_id)
+    session.add(posts)
+    session.commit()
+
+def view_comments():
+    pass
+
+
+
+
+
+# add topic main layout
+# view users, add users, second layout - K
+# view posts, add posts, second layout - M
+# view comments, add comments, second layout
+# view likes, add like, second layout
+
