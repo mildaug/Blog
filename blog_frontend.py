@@ -4,9 +4,9 @@ layout = [
     [
         sg.Button('Cars', key='-CARS-'),
         sg.Button('Home DIY', key='-HOME_DIY-'),
-        sg.Button('FOODS', key='-FOODS-'),
+        sg.Button('Foods', key='-FOODS-'),
         sg.Button('Pets', key='-PETS-'),
-        sg.Button('Hard Drugs', key='-HARD_DRUGS-')
+        sg.Button('Hard drugs', key='-HARD_DRUGS-')
     ],
     [
         sg.Button(button_color=('white', 'firebrick3'), button_text=('EXIT'), size=(20, 1), focus=True, key='Exit')
@@ -18,6 +18,38 @@ layout_cars = [
         sg.Button('BMW'),
         sg.Button('Audi'),
         sg.Button('Mercedes Benz'),
+    ]
+]
+
+layout_home_diy = [
+    [
+        sg.Button('Gardening'),
+        sg.Button('Woodworking'),
+        sg.Button('Painting'),
+    ]
+]
+
+layout_foods = [
+    [
+        sg.Button('Italian'),
+        sg.Button('Asian'),
+        sg.Button('Fast Food'),
+    ]
+]
+
+layout_pets = [
+    [
+        sg.Button('Dogs'),
+        sg.Button('Cats'),
+        sg.Button('Birds'),
+    ]
+]
+
+layout_hard_drugs = [
+    [
+        sg.Button('Cocaine'),
+        sg.Button('Heroin'),
+        sg.Button('Methamphetamine'),
     ]
 ]
 
@@ -36,24 +68,47 @@ while True:
             if event_cars == sg.WINDOW_CLOSED:
                 break
             # Handle button clicks within the cars window
-            elif event_cars == 'BMW':
-                sg.popup('BMW Clicked!')
-            elif event_cars == 'Audi':
-                sg.popup('Audi Clicked!')
-            elif event_cars == 'Mercedes Benz':
-                sg.popup('Mercedes Benz Clicked!')
+            sg.popup(f'{event_cars} Clicked!')
         cars_window.close()
 
     elif event == '-HOME_DIY-':
-        sg.popup('Button Clicked!')
+        home_diy_window = sg.Window('Home DIY', layout_home_diy)
+        while True:
+            event_home_diy, values_home_diy = home_diy_window.read()
+            if event_home_diy == sg.WINDOW_CLOSED:
+                break
+            # Handle button clicks within the home DIY window
+            sg.popup(f'{event_home_diy} Clicked!')
+        home_diy_window.close()
 
     elif event == '-FOODS-':
-        sg.popup('Button Clicked!')
+        foods_window = sg.Window('Foods', layout_foods)
+        while True:
+            event_foods, values_foods = foods_window.read()
+            if event_foods == sg.WINDOW_CLOSED:
+                break
+            # Handle button clicks within the foods window
+            sg.popup(f'{event_foods} Clicked!')
+        foods_window.close()
 
     elif event == '-PETS-':
-        sg.popup('Button Clicked!')
+        pets_window = sg.Window('Pets', layout_pets)
+        while True:
+            event_pets, values_pets = pets_window.read()
+            if event_pets == sg.WINDOW_CLOSED:
+                break
+            # Handle button clicks within the pets window
+            sg.popup(f'{event_pets} Clicked!')
+        pets_window.close()
 
     elif event == '-HARD_DRUGS-':
-        sg.popup('Button Clicked!')
+        hard_drugs_window = sg.Window('Hard Drugs', layout_hard_drugs)
+        while True:
+            event_hard_drugs, values_hard_drugs = hard_drugs_window.read()
+            if event_hard_drugs == sg.WINDOW_CLOSED:
+                break
+            # Handle button clicks within the hard drugs window
+            sg.popup(f'{event_hard_drugs} Clickedd!')
+        hard_drugs_window.close()
+           
 
-window.close()

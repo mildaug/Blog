@@ -98,24 +98,21 @@ def view_posts():
     for post in posts:
         print(post)
 
-def add_posts():
-    user_id = input('Enter user ID: ')
-    topic_id = input('Enter topic ID: ')
-
+def add_posts(user_id, topic_id):
     posts = Posts(user_id=user_id, topic_id=topic_id)
     session.add(posts)
     session.commit()
 
-def view_comments():
-    pass
+def add_topic(topic_name):
+    topic = Topics(topic_name=topic_name)
+    session.add(topic)
+    session.commit()
 
+def view_topic():
+    all_topics = session.query(Topics).all()
+    for topic in all_topics:
+        print(topic)
 
-
-
-
-# add topic main layout
-# view users, add users, second layout - K
-# view posts, add posts, second layout - M
 # view comments, add comments, second layout
 # view likes, add like, second layout
 
