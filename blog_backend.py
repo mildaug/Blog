@@ -6,7 +6,6 @@
 # - Išskirtas backend (modelis ir bazės sukūrimas) ir frontend (vartotojo sąsaja)
 # Objektiškai realizuota vartotojo sąsaja yra didelis pliusas 
 
-from datetime import datetime
 from sqlalchemy import create_engine, Integer, String, ForeignKey, Column
 from sqlalchemy.orm import declarative_base, relationship, sessionmaker
 
@@ -139,8 +138,9 @@ def add_posts(user_id, post_name, content, date, topic_id):
     session.add(posts)
     session.commit()
 
-#add_posts(1, 'Sodininkyste pradedantiems', 'Jeigu neseniai įsigijote namą arba butą su sodu arba sodinių, pirmą sezoną verčiau neskubėti. Po juoda žemes galite atrasti buvusio šeimininko sodo svajones. Daugelis augalų yra daugiamečiai ir žydi kiekvienais metais.', '2023-05-12', 1)
-#add_posts(3, 'Kas yra ChatGPT?', 'ChatGPT yra pokalbių roboto programa, kuri atsakinėja į tekstinius pranešimus. Tai yra OpenAI sukurtas didelis kalbos modelis, kuris yra mokomas analizuoti ir generuoti tekstą įvairiuose kontekstuose.', '2023-05-15', 4)
+# add_posts(1, 'Sodininkyste pradedantiems', 'Jeigu neseniai įsigijote namą arba butą su sodu arba sodinių, pirmą sezoną verčiau neskubėti. Po juoda žemes galite atrasti buvusio šeimininko sodo svajones. Daugelis augalų yra daugiamečiai ir žydi kiekvienais metais.', '2023-05-12', 1)
+# add_posts(3, 'Kas yra ChatGPT?', 'ChatGPT yra pokalbių roboto programa, kuri atsakinėja į tekstinius pranešimus. Tai yra OpenAI sukurtas didelis kalbos modelis, kuris yra mokomas analizuoti ir generuoti tekstą įvairiuose kontekstuose.', '2023-05-15', 4)
+# add_posts(5, 'Pyweek turnyras - kas tai?', 'Du kartus per metus Python žaidimų kūrėjai renkasi Pyweek turnyre kurti ir varžytis su savo žaidimais.', '2023-05-01', 4)
 
 def add_comment(user_id, post_id, comment):
     comment = Comments(user_id=user_id, post_id=post_id, comment=comment)
@@ -149,6 +149,7 @@ def add_comment(user_id, post_id, comment):
 
 # add_comment(2,2, "Puikus straipsnis!")
 # add_comment(1,1, "Nieko gero, nieko naujo nepasakei!")
+# add_comment(4, 2, 'Labai gerai pastebeta!')
 
 def post_topic_join_by_topicid(topic_id):
     query = session.query(Posts, Topics).select_from(Posts).join(Topics).filter(Topics.id == topic_id)
