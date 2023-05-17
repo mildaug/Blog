@@ -153,13 +153,9 @@ def add_comment(user_id, post_id, comment):
 # add_comment(1,1, "Nieko gero, nieko naujo nepasakei!")
 # add_comment(4, 2, 'Labai gerai pastebeta!')
 
-def post_topic_join_by_topicid(topic_id):
-    query = session.query(Posts, Topics).select_from(Posts).join(Topics).filter(Topics.id == topic_id)
+def post_topic_join_by_topicname(topic_name):
+    query = session.query(Posts, Topics).select_from(Posts).join(Topics).filter(Topics.topic_name == topic_name)
     joined_table = query.all()
-
-    for post, topic in joined_table:
-        print(f"Post Name: {post.post_name}, Topic Name: {topic.topic_name}")
-    
     return joined_table
 
 def info_table_join_by_postid(post_id):
