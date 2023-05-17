@@ -98,11 +98,11 @@ def add_user(user_name, email, f_name, l_name, ):
     session.add(user)
     session.commit()
 
-add_user('Kielele', 'kiele@gmail.com','Leta', 'Kiele')
-add_user('Mojo', 'linge@gmail.com', 'Marius', 'Linge')
-add_user('Nemunas', 'karietaite@gmail.com', 'Gile', 'Karietaite')
-add_user('Lololo', 'alka@gmail.com', 'Lina', 'Alka')
-add_user('Klaja', 'bukutis@gmail.com', 'Martynas', 'Bukutis')
+# add_user('Kielele', 'kiele@gmail.com','Leta', 'Kiele')
+# add_user('Mojo', 'linge@gmail.com', 'Marius', 'Linge')
+# add_user('Nemunas', 'karietaite@gmail.com', 'Gile', 'Karietaite')
+# add_user('Lololo', 'alka@gmail.com', 'Lina', 'Alka')
+# add_user('Klaja', 'bukutis@gmail.com', 'Martynas', 'Bukutis')
 
 
 def get_users():
