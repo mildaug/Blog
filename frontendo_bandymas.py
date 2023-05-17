@@ -21,13 +21,13 @@ sg.set_options(font=('Courier New', 16))
 
 category_layout = [
     [sg.Text('Category')],
-    [sg.Combo(categories, size=(20, 5), key='CATEGORY_COMBO')],
+    [sg.Combo(categories, size=(20, 1), key='CATEGORY_COMBO')],
     [sg.Button('Filter', key='FILTER_BUTTON')],
 ]
 
 subtopic_layout = [
     [sg.Text('Posts')],
-    [sg.Table(values=[], headings=['Posts'], auto_size_columns=False, size=(500, 5), key='POST_TABLE', enable_events=True)],
+    [sg.Table(values=[], headings=['Posts'], auto_size_columns=False, size=(100, 6), key='POST_TABLE', enable_events=True)],
 ]
 
 layout = [
@@ -49,11 +49,14 @@ while True:
     if event == 'CATEGORY_COMBO':
         selected_category = values['CATEGORY_COMBO']
         post_table = window['POST_TABLE']
-        post_table.update(values=[subtopics.get(selected_category, [])])
+        subtopic_list = subtopics.get(selected_category, [])
+        post_table.update(values=[[subtopic] for subtopic in subtopic_list])
 
     if event == 'FILTER_BUTTON':
         selected_category = values['CATEGORY_COMBO']
         post_table = window['POST_TABLE']
-        post_table.update(values=[subtopics.get(selected_category, [])])
+        subtopic_list = subtopics.get(selected_category, [])
+        post_table.update(values=[[subtopic] for subtopic in subtopic_list])
 
 window.close()
+
