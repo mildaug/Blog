@@ -139,6 +139,6 @@ def add_posts(user_id, post_name, content, date, topic_id):
     session.add(posts)
     session.commit()
 
-add_posts('1', 'Sodininkyste pradedantiems', 'Jeigu neseniai įsigijote namą arba butą su sodu arba sodinių, pirmą sezoną verčiau neskubėti. Po juoda žemes galite atrasti buvusio šeimininko sodo svajones. Daugelis augalų yra daugiamečiai ir žydi kiekvienais metais.', '1')
+#add_posts(1, 'Sodininkyste pradedantiems', 'Jeigu neseniai įsigijote namą arba butą su sodu arba sodinių, pirmą sezoną verčiau neskubėti. Po juoda žemes galite atrasti buvusio šeimininko sodo svajones. Daugelis augalų yra daugiamečiai ir žydi kiekvienais metais.', 2023-5-12, 1)
 
 
