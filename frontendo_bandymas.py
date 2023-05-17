@@ -1,6 +1,6 @@
 import PySimpleGUI as sg
 
-categories = [
+topics = [
     'Cars',
     'Home DIY',
     'Food',
@@ -8,7 +8,7 @@ categories = [
     'Hard drugs'
 ]
 
-subtopics = {
+posts = {
     'Cars': ['BMW', 'Audi', 'Mercedes Benz'],
     'Home DIY': ['Gardening', 'Woodworking', 'Painting'],
     'Food': ['Italian', 'Asian', 'Fast Food'],
@@ -27,13 +27,13 @@ likes = {
 sg.theme('DarkAmber')
 sg.set_options(font=('Courier New', 16))
 
-category_layout = [
-    [sg.Text('Category')],
-    [sg.Combo(categories, size=(20, 1), key='CATEGORY_COMBO')],
+topic_layout = [
+    [sg.Text('Topic')],
+    [sg.Combo(topics, size=(20, 1), key='TOPIC_COMBO')],
     [sg.Button('Filter', key='FILTER_BUTTON')],
 ]
 
-subtopic_layout = [
+post_layout = [
     [sg.Text('Posts')],
     [
         sg.Table(
@@ -51,21 +51,21 @@ subtopic_layout = [
 ]
 
 button_layout = [
-    [sg.Button('Add Category', key='ADD_CATEGORY_BUTTON')],
+    [sg.Button('Add Topic', key='ADD_TOPIC_BUTTON')],
     [sg.Button('Add Post', key='ADD_POST_BUTTON')],
     [sg.Button('Like', key='LIKE_BUTTON')],
 ]
 
 layout = [
     [
-        sg.Column(category_layout),
-        sg.Column(subtopic_layout),
+        sg.Column(topic_layout),
+        sg.Column(post_layout),
         sg.Column(button_layout),
     ],
     [sg.Button('Exit')],
 ]
 
-window = sg.Window("Categories and Subtopics", layout)
+window = sg.Window("Topics and Posts", layout)
 
 while True:
     event, values = window.read()
@@ -73,43 +73,43 @@ while True:
     if event == sg.WINDOW_CLOSED or event == 'Exit':
         break
 
-    if event == 'CATEGORY_COMBO':
-        selected_category = values['CATEGORY_COMBO']
+    if event == 'TOPIC_COMBO':
+        selected_topic = values['TOPIC_COMBO']
         post_table = window['POST_TABLE']
-        subtopic_list = subtopics.get(selected_category, [])
-        post_table.update(values=[[subtopic, likes[selected_category].get(subtopic, 0)] for subtopic in subtopic_list])
+        post_list = posts.get(selected_topic, [])
+        post_table.update(values=[[post, likes[selected_topic].get(post, 0)] for post in post_list])
 
     if event == 'FILTER_BUTTON':
-        selected_category = values['CATEGORY_COMBO']
+        selected_topic = values['TOPIC_COMBO']
         post_table = window['POST_TABLE']
-        subtopic_list = subtopics.get(selected_category, [])
-        post_table.update(values=[[subtopic, likes[selected_category].get(subtopic, 0)] for subtopic in subtopic_list])
+        post_list = posts.get(selected_topic, [])
+        post_table.update(values=[[post, likes[selected_topic].get(post, 0)] for post in post_list])
 
-    if event == 'ADD_CATEGORY_BUTTON':
-        new_category = sg.popup_get_text('Enter new category:')
-        if new_category:
-            categories.append(new_category)
-            subtopics[new_category] = []
-            likes[new_category] = {}
-            window['CATEGORY_COMBO'].update(values=categories)
+    if event == 'ADD_TOPIC_BUTTON':
+        new_topic = sg.popup_get_text('Enter new topic:')
+        if new_topic:
+            topics.append(new_topic)
+            posts[new_topic] = []
+            likes[new_topic] = {}
+            window['TOPIC_COMBO'].update(values=topics)
 
     if event == 'ADD_POST_BUTTON':
-        selected_category = values['CATEGORY_COMBO']
+        selected_topic = values['TOPIC_COMBO']
         new_post = sg.popup_get_text('Enter new post:')
         if new_post:
-            subtopics[selected_category].append(new_post)
-            likes[selected_category][new_post] = 0
+            posts[selected_topic].append(new_post)
+            likes[selected_topic][new_post] = 0
             post_table = window['POST_TABLE']
-            post_table.update(values=[[subtopic, likes[selected_category].get(subtopic, 0)] for subtopic in subtopics[selected_category]])
+            post_table.update(values=[[post, likes[selected_topic].get(post, 0)] for post in posts[selected_topic]])
 
     if event == 'LIKE_BUTTON':
-        selected_category = values['CATEGORY_COMBO']
+        selected_topic = values['TOPIC_COMBO']
         selected_row = values['POST_TABLE']
         if selected_row:
             selected_row = selected_row[0]
-            selected_subtopic = subtopics.get(selected_category, [])[selected_row]
-            likes[selected_category][selected_subtopic] += 1
+            selected_post = posts.get(selected_topic, [])[selected_row]
+            likes[selected_topic][selected_post] += 1
             post_table = window['POST_TABLE']
-            post_table.update(values=[[subtopic, likes[selected_category].get(subtopic, 0)] for subtopic in subtopics[selected_category]])
+            post_table.update(values=[[post, likes[selected_topic].get(post, 0)] for post in posts[selected_topic]])
 
 window.close()
