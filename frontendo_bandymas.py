@@ -27,7 +27,7 @@ category_layout = [
 
 subtopic_layout = [
     [sg.Text('Posts')],
-    [sg.Table(values=[], headings=['Posts'], auto_size_columns=False, size=(100, 6), key='POST_TABLE', enable_events=True)],
+    [sg.Table(values=[], headings=['Posts', 'Upload date'], auto_size_columns=False, size=(100, 6), col_widths=[30, 20], key='POST_TABLE', justification="left", enable_events=True)],
 ]
 
 layout = [

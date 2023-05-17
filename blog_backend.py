@@ -6,8 +6,10 @@
 # - Išskirtas backend (modelis ir bazės sukūrimas) ir frontend (vartotojo sąsaja)
 # Objektiškai realizuota vartotojo sąsaja yra didelis pliusas 
 
+from datetime import datetime
 from sqlalchemy import create_engine, Integer, String, ForeignKey, Column
 from sqlalchemy.orm import declarative_base, relationship, sessionmaker
+
 
 Base = declarative_base()
 
@@ -15,10 +17,10 @@ Base = declarative_base()
 class Users(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True)
-    user_name = Column(String(50))
-    email = Column(String(50))
-    f_name = Column(String(50))
-    l_name = Column(String(50))
+    user_name = Column('user_name', String(50))
+    email = Column('email', String(50))
+    f_name = Column('f_name', String(50))
+    l_name = Column('l_name', String(50))
     # Relationships:
     posts_by_user = relationship("Posts", back_populates="user_post")
     liked_by_user = relationship("Likes", back_populates="user_like")
@@ -32,8 +34,9 @@ class Posts(Base):
     __tablename__ = "posts"
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id"))
-    post_name = Column(String(50))
-    content = Column(String(300))
+    post_name = Column('post_name', String(50))
+    content = Column('content', String(300))
+    date = Column('date', String(50))
     topic_id = Column(Integer, ForeignKey("topics.id"))
     # Relationships:
     user_post = relationship("Users", back_populates="posts_by_user")
@@ -48,7 +51,7 @@ class Posts(Base):
 class Topics(Base):
     __tablename__ = "topics"
     id = Column(Integer, primary_key=True)
-    topic_name = Column(String(50))
+    topic_name = Column('column', String(50))
     # Relationships:
     topic_with_posts = relationship("Posts", back_populates="posts_in_topic")
 
@@ -72,7 +75,7 @@ class Likes(Base):
 class Comments(Base):
     __tablename__ = "comments"
     id = Column(Integer, primary_key=True)
-    comment = Column(String(250))
+    comment = Column('comment', String(250))
     user_id = Column(Integer, ForeignKey("users.id"))
     post_id = Column(Integer, ForeignKey("posts.id"))
     # Relationships:
@@ -117,7 +120,7 @@ def view_posts():
     return posts
 
 def add_posts(user_id, post_name, content, topic_id):
-    posts = Posts(user_id=user_id, post_name=post_name, content=content, topic_id=topic_id)
+    posts = Posts(user_id=user_id, post_name=post_name, content=content, date=datetime.now().strftime("%Y-%m-%d"), topic_id=topic_id)
     session.add(posts)
     session.commit()
 
