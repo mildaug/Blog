@@ -1,4 +1,26 @@
 import PySimpleGUI as sg
+from blog_backend import Users, Posts, Topics, Likes, Comments, session, engine
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+
+class Topics:
+    def view_topic():
+        all_topics = session.query(Topics).all()
+        topics_data = [
+            [topics.topic_name for topics in all_topics]
+        ]
+        return topics_data
+    
+    #def __init__(self):
+    def test(self):
+        topics_data = self.get_data()
+        self.topic_layout = [
+            [sg.Text('Topic')],
+            [sg.Combo(topics_data, size=(20, 1), key='TOPIC_COMBO')],
+            [sg.Button('Filter', key='FILTER_BUTTON')],
+        ]
+
 
 topics = [
     'Cars',
@@ -27,11 +49,6 @@ likes = {
 sg.theme('DarkAmber')
 sg.set_options(font=('Courier New', 16))
 
-topic_layout = [
-    [sg.Text('Topic')],
-    [sg.Combo(topics, size=(20, 1), key='TOPIC_COMBO')],
-    [sg.Button('Filter', key='FILTER_BUTTON')],
-]
 
 post_layout = [
     [sg.Text('Posts')],
@@ -58,12 +75,13 @@ button_layout = [
 
 layout = [
     [
-        sg.Column(topic_layout),
+        sg.Column(Topics.test(self=self)),
         sg.Column(post_layout),
         sg.Column(button_layout),
     ],
     [sg.Button('Exit')],
 ]
+
 
 window = sg.Window("Topics and Posts", layout)
 
