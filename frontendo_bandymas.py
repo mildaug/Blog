@@ -1,6 +1,6 @@
 import PySimpleGUI as sg
 from collections import defaultdict
-from blog_backend import view_topic, view_posts, session, engine
+from blog_backend import view_topic, view_posts, post_topic_join_by_topicname, session, engine
 
 all_topics = view_topic()
 topics = [topics.topic_name for topics in all_topics]
@@ -24,7 +24,7 @@ post_layout = [
     [
         sg.Table(
             values=[],
-            headings=['Posts', 'Likes'],
+            headings=['Posts', 'Date', 'Likes'],
             auto_size_columns=False,
             size=(100, 6),
             col_widths=[30, 10],
@@ -69,8 +69,12 @@ while True:
     if event == 'FILTER_BUTTON':
         selected_topic = values['TOPIC_COMBO']
         post_table = window['POST_TABLE']
-        post_list = posts
-        post_table.update(values=[[post, likes[selected_topic].get(post, 0)] for post in post_list])
+        all_posts = post_topic_join_by_topicname(selected_topic)
+        selected_posts = []
+        for post, topic in all_posts:
+            selected_post = [post.post_name, post.date]
+            selected_posts.append(selected_post)
+        post_table.update(values=selected_posts)
 
     if event == 'ADD_TOPIC_BUTTON':
         new_topic = sg.popup_get_text('Enter new topic:')
