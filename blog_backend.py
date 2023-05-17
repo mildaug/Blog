@@ -36,7 +36,7 @@ class Posts(Base):
     user_id = Column(Integer, ForeignKey("users.id"))
     post_name = Column('post_name', String(50))
     content = Column('content', String(300))
-    date = Column('date', String(50))
+    # date = Column('date', String(50))
     topic_id = Column(Integer, ForeignKey("topics.id"))
     # Relationships:
     user_post = relationship("Users", back_populates="posts_by_user")
@@ -51,7 +51,7 @@ class Posts(Base):
 class Topics(Base):
     __tablename__ = "topics"
     id = Column(Integer, primary_key=True)
-    topic_name = Column('column', String(50))
+    topic_name = Column('topic_name', String(50))
     # Relationships:
     topic_with_posts = relationship("Posts", back_populates="posts_in_topic")
 
@@ -86,7 +86,7 @@ class Comments(Base):
         return f"({self.comment}, {self.user_id}, {self.post_id})"
 
 
-engine = create_engine('sqlite:///blog.db', echo=True)
+engine = create_engine('sqlite:///blog.db', echo=False)
 Base.metadata.create_all(engine)
 
 Session = sessionmaker(bind=engine)
@@ -98,11 +98,11 @@ def add_user(user_name, email, f_name, l_name, ):
     session.add(user)
     session.commit()
 
-add_user('Kielele', 'kiele@gmail.com','Leta', 'Kiele')
-add_user('Mojo', 'linge@gmail.com', 'Marius', 'Linge')
-add_user('Nemunas', 'karietaite@gmail.com', 'Gile', 'Karietaite')
-add_user('Lololo', 'alka@gmail.com', 'Lina', 'Alka')
-add_user('Klaja', 'bukutis@gmail.com', 'Martynas', 'Bukutis')
+# add_user('Kielele', 'kiele@gmail.com','Leta', 'Kiele')
+# add_user('Mojo', 'linge@gmail.com', 'Marius', 'Linge')
+# add_user('Nemunas', 'karietaite@gmail.com', 'Gile', 'Karietaite')
+# add_user('Lololo', 'alka@gmail.com', 'Lina', 'Alka')
+# add_user('Klaja', 'bukutis@gmail.com', 'Martynas', 'Bukutis')
 
 
 def get_users():
@@ -120,14 +120,26 @@ def view_posts():
     return posts
 
 def add_posts(user_id, post_name, content, topic_id):
-    posts = Posts(user_id=user_id, post_name=post_name, content=content, date=datetime.now().strftime("%Y-%m-%d"), topic_id=topic_id)
+    posts = Posts(user_id=user_id, post_name=post_name, content=content, topic_id=topic_id) # date=datetime.now().strftime("%Y-%m-%d")
     session.add(posts)
     session.commit()
+
+# add_posts(3, "Info apie PhP", "Random tekstas patikrinimui ir peržiūrai ar viskas veikia", 1)
 
 def add_topic(topic_name):
     topic = Topics(topic_name=topic_name)
     session.add(topic)
+    session.commit() 
+
+def add_comment(user_id, post_id, comment):
+    comment = Comments(user_id=user_id, post_id=post_id, comment=comment)
+    session.add(comment)
     session.commit()
+
+# add_comment(2,2, "Puikus straipsnis!")
+# add_comment(1,1, "Nieko gero, nieko naujo nepasakei!")
+
+# add_topic("Informatika")
 
 def view_topic():
     all_topics = session.query(Topics).all()
@@ -135,5 +147,39 @@ def view_topic():
         print(topic)
     return all_topics
 
+def post_topic_join_by_topicid(topic_id):
+    query = session.query(Posts, Topics).select_from(Posts).join(Topics).filter(Topics.id == topic_id)
+    joined_table = query.all()
 
+    for post, topic in joined_table:
+        print(f"Post Name: {post.post_name}, Topic Name: {topic.topic_name}")
+    
+    return joined_table
 
+def info_table_join_by_postid(post_id):
+    query = session.query(Posts, Topics, Users).select_from(Posts).join(Topics).join(Users).filter(Posts.id == post_id)
+    joined_table = query.all()
+
+    for post, topic, user in joined_table:
+        print(f"Username: {user.user_name}, Post name: {post.post_name}, Post content: {post.content} Topic: {topic.topic_name}")
+
+    return joined_table
+
+def get_comments_by_postid(post_id):
+    comments = session.query(Comments, Users).join(Users).filter(Comments.post_id == post_id).all()
+    return comments
+
+def print_post_comments(post_id):
+    comments = get_comments_by_postid(post_id)
+    for comment, user in comments:
+        print(f"---------------------------")
+        print(f"---------Komentaras--------")
+        print(f"Comment: {comment.comment}")
+        print(f"User: {user.user_name}")
+
+# print_post_comments(2)
+# print_post_comments(1)
+
+# post_topic_join_by_topicid(1)
+# info_table_join_by_postid(2)
+# info_table_join_by_postid(3)
