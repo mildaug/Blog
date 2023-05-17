@@ -36,7 +36,7 @@ class Posts(Base):
     user_id = Column(Integer, ForeignKey("users.id"))
     post_name = Column('post_name', String(50))
     content = Column('content', String(300))
-    # date = Column('date', String(50))
+    date = Column('date', String(50))
     topic_id = Column(Integer, ForeignKey("topics.id"))
     # Relationships:
     user_post = relationship("Users", back_populates="posts_by_user")
@@ -134,12 +134,13 @@ def view_posts():
         print(post)
     return posts
 
-def add_posts(user_id, post_name, content, topic_id):
-    posts = Posts(user_id=user_id, post_name=post_name, content=content, topic_id=topic_id) #date=datetime.now().strftime("%Y-%m-%d"),
+def add_posts(user_id, post_name, content, date, topic_id):
+    posts = Posts(user_id=user_id, post_name=post_name, content=content, date=date, topic_id=topic_id)
     session.add(posts)
     session.commit()
 
-#add_posts(1, 'Sodininkyste pradedantiems', 'Jeigu neseniai įsigijote namą arba butą su sodu arba sodinių, pirmą sezoną verčiau neskubėti. Po juoda žemes galite atrasti buvusio šeimininko sodo svajones. Daugelis augalų yra daugiamečiai ir žydi kiekvienais metais.', 2023-5-12, 1)
+#add_posts(1, 'Sodininkyste pradedantiems', 'Jeigu neseniai įsigijote namą arba butą su sodu arba sodinių, pirmą sezoną verčiau neskubėti. Po juoda žemes galite atrasti buvusio šeimininko sodo svajones. Daugelis augalų yra daugiamečiai ir žydi kiekvienais metais.', '2023-05-12', 1)
+#add_posts(3, 'Kas yra ChatGPT?', 'ChatGPT yra pokalbių roboto programa, kuri atsakinėja į tekstinius pranešimus. Tai yra OpenAI sukurtas didelis kalbos modelis, kuris yra mokomas analizuoti ir generuoti tekstą įvairiuose kontekstuose.', '2023-05-15', 4)
 
 def add_comment(user_id, post_id, comment):
     comment = Comments(user_id=user_id, post_id=post_id, comment=comment)
@@ -175,7 +176,7 @@ def print_post_comments(post_id):
     comments = get_comments_by_postid(post_id)
     for comment, user in comments:
         print(f"---------------------------")
-        print(f"---------Komentaras--------")
+        print(f"---------Comment--------")
         print(f"Comment: {comment.comment}")
         print(f"User: {user.user_name}")
 
