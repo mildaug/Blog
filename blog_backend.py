@@ -56,6 +56,8 @@ class Topics(Base):
 
     def __repr__(self):
         return f"({self.id}, {self.topic_name})"
+    
+    
 
 
 class Likes(Base):
