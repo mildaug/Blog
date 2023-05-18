@@ -1,6 +1,7 @@
 import PySimpleGUI as sg
 from collections import defaultdict
-from blog_backend import view_topic, get_users, view_posts, post_topic_join_by_topicname, add_topic, session, engine
+from blog_backend import view_topic, get_users, view_posts, post_topic_join_by_topicname, add_topic, add_posts, Posts, session, engine
+from datetime import datetime
 
 all_topics = view_topic()
 topics = [topics.topic_name for topics in all_topics]
@@ -39,6 +40,23 @@ post_layout = [
     ],
 ]
 
+view_post_layout = [
+    [sg.Text('Post details')],
+    [
+        sg.Table(
+            values=[],
+            headings=['Post', 'User'],
+            auto_size_columns=False,
+            size=(100, 6),
+            col_widths=[30, 11, 10],
+            key='VIEW_POST_TABLE',
+            justification='left',
+            enable_events=True,
+            select_mode=sg.TABLE_SELECT_MODE_BROWSE
+        )
+    ],
+]
+
 def add_post_layout():
     add_post_layout = [
         [sg.Text('Enter post details:')],
@@ -53,6 +71,7 @@ def add_post_layout():
 button_layout = [
     [sg.Button('Add Topic', key='ADD_TOPIC_BUTTON')],
     [sg.Button('Add Post', key='ADD_POST_BUTTON')],
+    [sg.Button('View Post', key='VIEW_POST_BUTTON')],
     [sg.Button('Like', key='LIKE_BUTTON')],
 ]
 
@@ -106,6 +125,20 @@ while True:
                 break
             elif event == "Cancel":
                 add_post_window.close()
+            elif event == 'OK':
+                new_post_username = values['user_name']
+                new_post_id = new_post_username[0]
+                new_post_name = values['post_name']
+                new_post_content = values['content']
+                new_post_date = datetime.now().strftime("%Y-%m-%d")
+                selected_topic = values['topic_combo']
+                topic_id = next(topic.id for topic in all_topics if topic.topic_name == selected_topic)
+                new_post = add_posts(new_post_id, new_post_name, new_post_content, new_post_date, topic_id)
+                add_post_window.close()
+
+    if event == 'VIEW_POST_BUTTON':
+        post_details = sg.popup_get_text('Post')
+
 
     if event == 'LIKE_BUTTON':
         selected_topic = values['TOPIC_COMBO']

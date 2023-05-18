@@ -136,8 +136,8 @@ def view_posts():
         print(post)
     return posts
 
-def add_posts(user_id, post_name, content, topic_id):
-    posts = Posts(user_id=user_id, post_name=post_name, content=content, date=datetime.now().strftime("%Y-%m-%d"), topic_id=topic_id)
+def add_posts(user_id, post_name, content, date, topic_id):
+    posts = Posts(user_id=user_id, post_name=post_name, content=content, date=date, topic_id=topic_id)
     session.add(posts)
     session.commit()
 
