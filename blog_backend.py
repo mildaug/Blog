@@ -41,7 +41,7 @@ class Posts(Base):
     topic_id = Column(Integer, ForeignKey("topics.id"))
     # Relationships:
     user_post = relationship("Users", back_populates="posts_by_user")
-    posts_in_topic = relationship("Topics", back_populates="topic_with_posts")
+    topic = relationship("Topics", back_populates="posts")
     all_likes = relationship("Likes", back_populates="post_like")
     all_comments = relationship("Comments", back_populates="post_comments")
 
@@ -54,7 +54,7 @@ class Topics(Base):
     id = Column(Integer, primary_key=True)
     topic_name = Column('topic_name', String(50))
     # Relationships:
-    topic_with_posts = relationship("Posts", back_populates="posts_in_topic")
+    posts = relationship("Posts", back_populates="topic")
 
     def __repr__(self):
         return f"({self.id}, {self.topic_name})"
