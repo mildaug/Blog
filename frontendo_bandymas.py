@@ -1,6 +1,6 @@
 import PySimpleGUI as sg
 from collections import defaultdict
-from blog_backend import view_topic, view_posts, post_topic_join_by_topicname, session, engine
+from blog_backend import view_topic, view_posts, post_topic_join_by_topicname, add_topic, session, engine
 
 all_topics = view_topic()
 topics = [topics.topic_name for topics in all_topics]
@@ -27,7 +27,7 @@ post_layout = [
             headings=['Posts', 'Date', 'Likes'],
             auto_size_columns=False,
             size=(100, 6),
-            col_widths=[30, 10],
+            col_widths=[30, 11, 10],
             key='POST_TABLE',
             justification='left',
             enable_events=True,
@@ -79,9 +79,8 @@ while True:
     if event == 'ADD_TOPIC_BUTTON':
         new_topic = sg.popup_get_text('Enter new topic:')
         if new_topic:
+            add_topic(new_topic)
             topics.append(new_topic)
-            posts[new_topic] = []
-            likes[new_topic] = {}
             window['TOPIC_COMBO'].update(values=topics)
 
     if event == 'ADD_POST_BUTTON':
