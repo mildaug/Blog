@@ -1,6 +1,6 @@
 import PySimpleGUI as sg
 from collections import defaultdict
-from blog_backend import view_topic, get_users, view_posts, post_topic_join_by_topicname, add_topic, Posts, session, engine
+from blog_backend import view_topic, get_users, view_posts, post_topic_join_by_topicname, add_topic, add_posts, Posts, session, engine
 from datetime import datetime
 
 all_topics = view_topic()
@@ -11,12 +11,6 @@ posts = [post.post_name for post in all_posts]
 
 all_users = get_users()
 user = [[user.id, user.user_name] for user in all_users]
-
-def add_posts(topic_id, post_name, content, date):
-    posts = Posts(topic_id=topic_id, post_name=post_name, content=content, date=date)
-    session.add(posts)
-    session.commit()
-    return posts
 
 likes = defaultdict(dict) # likes sudeda i nested dictionary
 
@@ -114,18 +108,14 @@ while True:
             elif event == "Cancel":
                 add_post_window.close()
             elif event == 'OK':
+                new_post_username = values['user_name']
+                new_post_id = new_post_username[0]
                 new_post_name = values['post_name']
                 new_post_content = values['content']
                 new_post_date = datetime.now().strftime("%Y-%m-%d")
                 selected_topic = values['topic_combo']
                 topic_id = next(topic.id for topic in all_topics if topic.topic_name == selected_topic)
-                new_post = add_posts(topic_id, new_post_name, new_post_content, new_post_date)
-                if new_post:
-                    all_posts = view_posts()
-                    posts = [post.post_name for post in all_posts]
-                    likes[new_post.post_name] = 0
-                    post_table = window['POST_TABLE']
-                    post_table.update(values=[[post, likes.get(post, 0)] for post in posts])
+                new_post = add_posts(new_post_id, new_post_name, new_post_content, new_post_date, topic_id)
                 add_post_window.close()
 
 
