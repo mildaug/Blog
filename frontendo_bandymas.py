@@ -46,6 +46,23 @@ post_layout = [
     ],
 ]
 
+view_post_layout = [
+    [sg.Text('Post details')],
+    [
+        sg.Table(
+            values=[],
+            headings=['Post', 'User'],
+            auto_size_columns=False,
+            size=(100, 6),
+            col_widths=[30, 11, 10],
+            key='VIEW_POST_TABLE',
+            justification='left',
+            enable_events=True,
+            select_mode=sg.TABLE_SELECT_MODE_BROWSE
+        )
+    ],
+]
+
 def add_post_layout():
     add_post_layout = [
         [sg.Text('Enter post details:')],
@@ -60,6 +77,7 @@ def add_post_layout():
 button_layout = [
     [sg.Button('Add Topic', key='ADD_TOPIC_BUTTON')],
     [sg.Button('Add Post', key='ADD_POST_BUTTON')],
+    [sg.Button('View Post', key='VIEW_POST_BUTTON')],
     [sg.Button('Like', key='LIKE_BUTTON')],
 ]
 
@@ -127,6 +145,9 @@ while True:
                     post_table = window['POST_TABLE']
                     post_table.update(values=[[post, likes.get(post, 0)] for post in posts])
                 add_post_window.close()
+
+    if event == 'VIEW_POST_BUTTON':
+        post_details = sg.popup_get_text('Post')
 
 
     if event == 'LIKE_BUTTON':
