@@ -6,9 +6,10 @@
 # - Išskirtas backend (modelis ir bazės sukūrimas) ir frontend (vartotojo sąsaja)
 # Objektiškai realizuota vartotojo sąsaja yra didelis pliusas 
 
-from sqlalchemy import create_engine, Integer, String, ForeignKey, Column
+from sqlalchemy import func, create_engine, Integer, String, ForeignKey, Column
 from sqlalchemy.orm import declarative_base, relationship, sessionmaker
 from datetime import datetime
+import PySimpleGUI
 
 
 Base = declarative_base()
@@ -40,7 +41,7 @@ class Posts(Base):
     topic_id = Column(Integer, ForeignKey("topics.id"))
     # Relationships:
     user_post = relationship("Users", back_populates="posts_by_user")
-    posts_in_topic = relationship("Topics", back_populates="topic_with_posts")
+    topic = relationship("Topics", back_populates="posts")
     all_likes = relationship("Likes", back_populates="post_like")
     all_comments = relationship("Comments", back_populates="post_comments")
 
@@ -53,14 +54,11 @@ class Topics(Base):
     id = Column(Integer, primary_key=True)
     topic_name = Column('topic_name', String(50))
     # Relationships:
-    topic_with_posts = relationship("Posts", back_populates="posts_in_topic")
+    posts = relationship("Posts", back_populates="topic")
 
     def __repr__(self):
         return f"({self.id}, {self.topic_name})"
     
-    
-
-
 class Likes(Base):
     __tablename__ = "likes"
     id = Column(Integer, primary_key=True)
@@ -69,7 +67,6 @@ class Likes(Base):
     # Relationships:
     user_like = relationship("Users", back_populates="liked_by_user")
     post_like = relationship("Posts", back_populates="all_likes")
-
     def __repr__(self):
         return f"({self.user_id}, {self.post_id})"
     
@@ -170,6 +167,14 @@ def info_table_join_by_postid(post_id):
 
     return joined_table
 
+def get_post_id(post_name):
+    post = session.query(Posts).filter_by(post_name=post_name).first()
+    if post:
+        return post.id
+    else:
+        return None
+
+
 def get_comments_by_postid(post_id):
     comments = session.query(Comments, Users).join(Users).filter(Comments.post_id == post_id).all()
     return comments
@@ -182,6 +187,15 @@ def print_post_comments(post_id):
         print(f"Comment: {comment.comment}")
         print(f"User: {user.user_name}")
 
+def add_like(user_id, post_id, sg):
+    existing_like = session.query(Likes).filter_by(user_id=user_id, post_id=post_id).first()
+    if existing_like:
+        sg.popup("You have already liked this post.")
+    else:
+        like = Likes(user_id=user_id, post_id=post_id)
+        session.add(like)
+        session.commit()
+        sg.popup("Like added successfully.")
 
 # print_post_comments(2)
 # print_post_comments(1)

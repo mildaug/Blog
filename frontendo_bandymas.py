@@ -1,6 +1,6 @@
 import PySimpleGUI as sg
 from collections import defaultdict
-from blog_backend import view_topic, get_users, view_posts, post_topic_join_by_topicname, add_topic, add_posts, Posts, session, engine
+from blog_backend import view_topic, add_like, get_post_id, get_users, view_posts, post_topic_join_by_topicname, add_topic, add_posts, Posts, Likes, Topics, session, engine
 from datetime import datetime
 
 all_topics = view_topic()
@@ -12,7 +12,7 @@ posts = [post.post_name for post in all_posts]
 all_users = get_users()
 user = [[user.id, user.user_name] for user in all_users]
 
-likes = defaultdict(dict) # likes sudeda i nested dictionary
+likes = defaultdict(dict) 
 
 sg.theme('DarkAmber')
 sg.set_options(font=('Courier New', 16))
@@ -40,22 +40,22 @@ post_layout = [
     ],
 ]
 
-view_post_layout = [
-    [sg.Text('Post details')],
-    [
-        sg.Table(
-            values=[],
-            headings=['Post', 'User'],
-            auto_size_columns=False,
-            size=(100, 6),
-            col_widths=[30, 11, 10],
-            key='VIEW_POST_TABLE',
-            justification='left',
-            enable_events=True,
-            select_mode=sg.TABLE_SELECT_MODE_BROWSE
-        )
-    ],
-]
+def get_post_content(topic, post_name):
+    topic_object = session.query(Topics).filter(Topics.topic_name == topic).first()
+    post = session.query(Posts).filter(Posts.topic_id == topic_object.id, Posts.post_name == post_name).first()
+    print(post)
+    if post:
+        return post.content
+    else:
+        return ""
+    
+def view_post_layout(content=''):
+    layout = [
+        [sg.Text('Post details')],
+        [sg.Multiline(content, size=(50, 10), key='POST_CONTENT', disabled=True)],
+        [sg.Button('Close')]
+    ]
+    return layout   
 
 def add_post_layout():
     add_post_layout = [
@@ -64,9 +64,16 @@ def add_post_layout():
         [sg.Text('Post Name:'), sg.Input(key='post_name')],
         [sg.Text('Content:'), sg.Input(key='content')],
         [sg.Text('Topic:'), sg.Combo(topics, key='topic_combo')],
-        [sg.Button('OK'), sg.Button('Cancel')]
+        [sg.Button('OK', key='OK'), sg.Button('Cancel', key='CANCEL')]
     ]   
     return add_post_layout
+
+def add_like_layout():
+    add_like_layout = [
+        [sg.Text('Who adds a like: '), sg.Combo(user, key='user_name')],
+        [sg.Button('OK', key='OK'), sg.Button('Cancel', key='CANCEL')]
+    ]
+    return add_like_layout
 
 button_layout = [
     [sg.Button('Add Topic', key='ADD_TOPIC_BUTTON')],
@@ -105,7 +112,8 @@ while True:
         all_posts = post_topic_join_by_topicname(selected_topic)
         selected_posts = []
         for post, topic in all_posts:
-            selected_post = [post.post_name, post.date]
+            likes_count = session.query(Likes).filter_by(post_id=post.id).distinct(Likes.user_id).count()
+            selected_post = [post.post_name, post.date, likes_count]
             selected_posts.append(selected_post)
         post_table.update(values=selected_posts)
 
@@ -123,7 +131,7 @@ while True:
             event, values = add_post_window.read()
             if event == sg.WINDOW_CLOSED:
                 break
-            elif event == "Cancel":
+            elif event == "CANCEL":
                 add_post_window.close()
             elif event == 'OK':
                 new_post_username = values['user_name']
@@ -137,17 +145,41 @@ while True:
                 add_post_window.close()
 
     if event == 'VIEW_POST_BUTTON':
-        post_details = sg.popup_get_text('Post')
-
+        selected_row = values['POST_TABLE'][0]
+        selected_post = selected_posts[selected_row]
+        selected_post_name = selected_post[0]
+        print(selected_post_name)
+        post_content = get_post_content(selected_topic, selected_post_name)
+        layout = view_post_layout(post_content)
+        view_post_window = sg.Window('View Post', layout, finalize=True)
+        view_post_window['POST_CONTENT'].update(value=post_content)
+        while True:
+            event, values = view_post_window.read()
+            if event in (sg.WINDOW_CLOSED, 'Close'):
+                break
+        view_post_window.close()
 
     if event == 'LIKE_BUTTON':
-        selected_topic = values['TOPIC_COMBO']
-        selected_row = values['POST_TABLE']
-        if selected_row:
-            selected_row = selected_row[0]
-            selected_post = posts.get(selected_topic, [])[selected_row]
-            likes[selected_topic][selected_post] += 1
-            post_table = window['POST_TABLE']
-            post_table.update(values=[[post, likes[selected_topic].get(post, 0)] for post in posts[selected_topic]])
+        layout = add_like_layout()
+        add_like_window = sg.Window('Add Post', layout)
+        selected_row = values['POST_TABLE'][0]
+        selected_post_name = selected_posts[selected_row][0]
+        print(selected_post_name)
+        post_id = get_post_id(selected_post_name)
+        print(post_id)
+        while True:
+            event, values = add_like_window.read()
+            if event == sg.WINDOW_CLOSED:
+                break
+            elif event == "CANCEL":
+                add_like_window.close()
+            elif event == "OK":
+                selected_user = values['user_name']
+                selected_user_id = selected_user[0]
+                print(selected_user_id)
+                if selected_user:
+                    add_like(selected_user_id, post_id, sg)
+                    add_like_window.close()
+                
 
 window.close()
