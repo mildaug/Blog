@@ -146,19 +146,18 @@ while True:
 
     if event == 'VIEW_POST_BUTTON':
         selected_row = values['POST_TABLE'][0]
-        if selected_row:
-            selected_post = selected_posts[selected_row]
-            selected_post_name = selected_post[0]
-            print(selected_post_name)
-            post_content = get_post_content(selected_topic, selected_post)
-            layout = view_post_layout(post_content)
-            view_post_window = sg.Window('View Post', layout, finalize=True)
-            view_post_window['POST_CONTENT'].update(value=post_content)
-            while True:
-                event, values = view_post_window.read()
-                if event in (sg.WINDOW_CLOSED, 'Close'):
-                    break
-            view_post_window.close()
+        selected_post = selected_posts[selected_row]
+        selected_post_name = selected_post[0]
+        print(selected_post_name)
+        post_content = get_post_content(selected_topic, selected_post_name)
+        layout = view_post_layout(post_content)
+        view_post_window = sg.Window('View Post', layout, finalize=True)
+        view_post_window['POST_CONTENT'].update(value=post_content)
+        while True:
+            event, values = view_post_window.read()
+            if event in (sg.WINDOW_CLOSED, 'Close'):
+                break
+        view_post_window.close()
 
     if event == 'LIKE_BUTTON':
         layout = add_like_layout()
