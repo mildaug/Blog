@@ -8,6 +8,7 @@
 
 from sqlalchemy import create_engine, Integer, String, ForeignKey, Column
 from sqlalchemy.orm import declarative_base, relationship, sessionmaker
+from datetime import datetime
 
 
 Base = declarative_base()
@@ -135,10 +136,12 @@ def view_posts():
         print(post)
     return posts
 
-def add_posts(user_id, post_name, content, date, topic_id):
-    posts = Posts(user_id=user_id, post_name=post_name, content=content, date=date, topic_id=topic_id)
+def add_posts(user_id, post_name, content, topic_id):
+    posts = Posts(user_id=user_id, post_name=post_name, content=content, date=datetime.now().strftime("%Y-%m-%d"), topic_id=topic_id)
     session.add(posts)
     session.commit()
+
+# add_posts(4, "Eurolyos Final Four Kaune","For the first time, Lithuania’s second-biggest city Kaunas will host the Euroleague Final Four. Many basketball fans are looking forward to that event even though their club BC Žalgiris did not make it to the tournament.", 5)
 
 # add_posts(1, 'Sodininkyste pradedantiems', 'Jeigu neseniai įsigijote namą arba butą su sodu arba sodinių, pirmą sezoną verčiau neskubėti. Po juoda žemes galite atrasti buvusio šeimininko sodo svajones. Daugelis augalų yra daugiamečiai ir žydi kiekvienais metais.', '2023-05-12', 1)
 # add_posts(3, 'Kas yra ChatGPT?', 'ChatGPT yra pokalbių roboto programa, kuri atsakinėja į tekstinius pranešimus. Tai yra OpenAI sukurtas didelis kalbos modelis, kuris yra mokomas analizuoti ir generuoti tekstą įvairiuose kontekstuose.', '2023-05-15', 4)

@@ -1,12 +1,15 @@
 import PySimpleGUI as sg
 from collections import defaultdict
-from blog_backend import view_topic, view_posts, post_topic_join_by_topicname, session, engine
+from blog_backend import view_topic, get_users, view_posts, post_topic_join_by_topicname, add_topic, session, engine
 
 all_topics = view_topic()
 topics = [topics.topic_name for topics in all_topics]
 
 all_posts = view_posts()
 posts = [post.post_name for post in all_posts]
+
+all_users = get_users()
+user = [[user.id, user.user_name] for user in all_users]
 
 likes = defaultdict(dict) # likes sudeda i nested dictionary
 
@@ -27,7 +30,7 @@ post_layout = [
             headings=['Posts', 'Date', 'Likes'],
             auto_size_columns=False,
             size=(100, 6),
-            col_widths=[30, 10],
+            col_widths=[30, 11, 10],
             key='POST_TABLE',
             justification='left',
             enable_events=True,
@@ -35,6 +38,17 @@ post_layout = [
         )
     ],
 ]
+
+def add_post_layout():
+    add_post_layout = [
+        [sg.Text('Enter post details:')],
+        [sg.Text('Username:'), sg.Combo(user, key='user_name')],
+        [sg.Text('Post Name:'), sg.Input(key='post_name')],
+        [sg.Text('Content:'), sg.Input(key='content')],
+        [sg.Text('Topic:'), sg.Combo(topics, key='topic_combo')],
+        [sg.Button('OK'), sg.Button('Cancel')]
+    ]   
+    return add_post_layout
 
 button_layout = [
     [sg.Button('Add Topic', key='ADD_TOPIC_BUTTON')],
@@ -79,19 +93,19 @@ while True:
     if event == 'ADD_TOPIC_BUTTON':
         new_topic = sg.popup_get_text('Enter new topic:')
         if new_topic:
+            add_topic(new_topic)
             topics.append(new_topic)
-            posts[new_topic] = []
-            likes[new_topic] = {}
             window['TOPIC_COMBO'].update(values=topics)
 
     if event == 'ADD_POST_BUTTON':
-        selected_topic = values['TOPIC_COMBO']
-        new_post = sg.popup_get_text('Enter new post:')
-        if new_post:
-            posts[selected_topic].append(new_post)
-            likes[selected_topic][new_post] = 0
-            post_table = window['POST_TABLE']
-            post_table.update(values=[[post, likes[selected_topic].get(post, 0)] for post in posts[selected_topic]])
+        layout = add_post_layout()
+        add_post_window = sg.Window('Add Post', layout)
+        while True:
+            event, values = add_post_window.read()
+            if event == sg.WINDOW_CLOSED:
+                break
+            elif event == "Cancel":
+                add_post_window.close()
 
     if event == 'LIKE_BUTTON':
         selected_topic = values['TOPIC_COMBO']
