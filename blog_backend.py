@@ -16,10 +16,10 @@ Base = declarative_base()
 class Users(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True)
-    username = Column('user_name', String(50))
+    username = Column('username', String(50))
     email = Column('email', String(50))
-    first_name = Column('f_name', String(50))
-    last_name = Column('l_name', String(50))
+    first_name = Column('first_name', String(50))
+    last_name = Column('last_name', String(50))
     # Relationships:
     posts = relationship("Posts", back_populates="user")
     likes = relationship("Likes", back_populates="user")
@@ -31,7 +31,10 @@ class Users(Base):
 
     def __repr__(self):
         return f"({self.id}, {self.username})"
-
+    
+    def __str__(self):
+        return self.username
+    
 
 class Topics(Base):
     __tablename__ = "topics"
@@ -42,6 +45,9 @@ class Topics(Base):
 
     def __repr__(self):
         return f"({self.id}, {self.name})"
+
+    def __str__(self):
+        return self.name
 
 
 class Posts(Base):
@@ -58,8 +64,14 @@ class Posts(Base):
     likes = relationship("Likes", back_populates="post")
     comments = relationship("Comments", back_populates="post")
 
+    # def __repr__(self):
+    #     return f"({self.id}, {self.user_id}, {self.topic_id})"
+    
     def __repr__(self):
-        return f"({self.id}, {self.user_id}, {self.topic_id})"
+        return self.__str__()
+
+    def __str__(self):
+        return self.name
 
 
 class Likes(Base):
