@@ -1,13 +1,8 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from datetime import date, datetime
-from blog_backend import Base, Users, Posts, Likes, Comments, Topics
+from datetime import date
+from blog_backend import Base, Users, Posts, Comments, Topics
+from config import session, engine
 
-engine = create_engine('sqlite:///blog.db')
 Base.metadata.create_all(engine)
-
-Session = sessionmaker(bind=engine)
-session = Session()
 
 # Add users
 users = []
