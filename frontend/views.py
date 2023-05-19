@@ -1,6 +1,6 @@
 from datetime import date
 from config import session, sg
-from blog_backend import Topics, Users, Posts, Likes
+from blog_backend import Topics, Users, Posts, Likes, Comments
 from frontend.layouts import view_post_layout, add_post_layout
 
 def refresh_post_table(window: sg.Window, topic: Topics, user: Users):
@@ -24,7 +24,16 @@ def view_post(post: Posts, user: Users, window: sg.Window):
             break
         if event == 'LIKE_BUTTON':
             like_post(post, user, window)
-    view_post_window.close()
+        if event == "COMMENT":
+            add_new_comment = sg.popup_get_text("Add new comment:")
+            new_comment = Comments(
+            comment=add_new_comment,
+            user=user,
+            post=post,
+        )
+        session.add(new_comment)
+        session.commit()
+        view_post_window.close()
 
 def like_post(post: Posts, user: Users, window: sg.Window):
     current_like = session.query(Likes).filter(Likes.user == user, Likes.post == post).first()

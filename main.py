@@ -30,7 +30,7 @@ while True:
                 window['LIKE_BUTTON'].update(disabled=False)
             enable_post_editing = enable_post_adding and isinstance(post, Posts) and post.user == user
             window['EDIT_POST_BUTTON'].update(disabled=not enable_post_editing)
-    
+
     elif event == 'VIEW_POST_BUTTON':
         if isinstance(post, Posts):
             view_post(post, user, window)
