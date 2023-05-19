@@ -41,7 +41,7 @@ while True:
 
     elif event == 'ADD_TOPIC_BUTTON':
         new_topic_name = sg.popup_get_text('Enter new topic:')
-        if len(new_topic_name) > 0 and \
+        if not new_topic_name == None and len(new_topic_name) > 0 and \
                 not session.query(Topics).filter(Topics.name == new_topic_name).first():
             new_topic = Topics(name=new_topic_name)
             session.add(new_topic)
