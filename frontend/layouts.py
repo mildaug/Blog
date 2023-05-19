@@ -9,7 +9,6 @@ topics_layout = [
     [sg.Combo(users, size=(20, 1), key='USER_COMBO', enable_events=True)],
     [sg.Text('Topic')],
     [sg.Combo(topics, size=(20, 1), key='TOPIC_COMBO', enable_events=True)],
-    # [sg.Button('Filter', key='FILTER_BUTTON')],
 ]
 
 posts_layout = [
@@ -34,6 +33,7 @@ buttons_layout = [
     [sg.Button('Like', key='LIKE_BUTTON', disabled=True)],
     [sg.Button('Add Topic', key='ADD_TOPIC_BUTTON')],
     [sg.Button('Add Post', key='ADD_POST_BUTTON', disabled=True)],
+    [sg.Button('Edit Post', key='EDIT_POST_BUTTON', disabled=True)],
 ]
 
 main_layout = [
