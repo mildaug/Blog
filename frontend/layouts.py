@@ -49,7 +49,7 @@ def view_post_layout(post: Posts):
     layout = [
         [sg.Text(post.name)],
         [sg.Multiline(post.content, size=(50, 10), key='POST_CONTENT', disabled=True)],
-        [sg.Button('Close'), sg.Button('Like', key='LIKE_BUTTON')],
+        [sg.Button('Close'), sg.Button('Comment', key='COMMENT'), sg.Button('Like', key='LIKE_BUTTON')],
     ]
     return layout
 
